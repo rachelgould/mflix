@@ -192,7 +192,7 @@ export default class MoviesDAO {
     to complete this task, but you might have to do something about `const`.
     */
 
-    const queryPipeline = [
+    let queryPipeline = [
       matchStage,
       sortStage,
       // TODO Ticket: Faceted Search
@@ -200,6 +200,9 @@ export default class MoviesDAO {
     ]
 
     try {
+      queryPipeline.push(skipStage)
+      queryPipeline.push(limitStage)
+      queryPipeline.push(facetStage)
       const results = await (await movies.aggregate(queryPipeline)).next()
       const count = await (await movies.aggregate(countingPipeline)).next()
       return {
@@ -244,6 +247,8 @@ export default class MoviesDAO {
         .find(query)
         .project(project)
         .sort(sort)
+        .limit(moviesPerPage)
+        .skip(page * moviesPerPage)
     } catch (e) {
       console.error(`Unable to issue find command, ${e}`)
       return { moviesList: [], totalNumMovies: 0 }
