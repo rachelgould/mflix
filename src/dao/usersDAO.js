@@ -54,18 +54,18 @@ export default class UsersDAO {
     Please increase the durability of this method by using a non-default write
     concern with ``insertOne``.
     */
-   let { name, email, password } = userInfo;
+    let { name, email, password } = userInfo
 
     try {
       // TODO Ticket: User Management
       // Insert a user with the "name", "email", and "password" fields.
       // TODO Ticket: Durable Writes
       // Use a more durable Write Concern for this operation.
-      await users.insertOne({ 
+      await users.insertOne({
         name: name,
         email: email,
-        password: password
-       })
+        password: password,
+      })
       return { success: true }
     } catch (e) {
       if (String(e).startsWith("MongoError: E11000 duplicate key error")) {
@@ -89,12 +89,12 @@ export default class UsersDAO {
       // matching the "user_id" field with the email passed to this function.
       await sessions.updateOne(
         { user_id: email },
-        { 
-          $set: { 
-            jwt: jwt 
-          }, 
+        {
+          $set: {
+            jwt: jwt,
+          },
         },
-        { upsert: true }
+        { upsert: true },
       )
       return { success: true }
     } catch (e) {
